@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace zomboni.Properties {
+namespace zamboni.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

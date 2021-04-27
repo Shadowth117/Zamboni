@@ -76,7 +76,7 @@ namespace zomFormNew
             this.Controls.Add(this.batchExtractIceButton);
             this.Controls.Add(this.extractIceButton);
             this.Name = "NicerForm";
-            this.Text = "Zomboni Lite";
+            this.Text = "Zamboni Lite";
             this.ResumeLayout(false);
             this.PerformLayout();
 

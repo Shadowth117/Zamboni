@@ -12,7 +12,7 @@ using System.Windows.Forms;
 using zomForm;
 using zomFormNew;
 
-namespace zomboni
+namespace zamboni
 {
     internal static class Program
     {
