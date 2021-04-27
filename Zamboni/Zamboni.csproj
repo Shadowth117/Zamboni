@@ -206,7 +206,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ZomboniLib\ZomboniLib.csproj">
+    <ProjectReference Include="..\ZamboniLib\ZamboniLib\ZamboniLib.csproj">
       <Project>{f0c5b71b-5956-42fe-8dac-10759cf6bee0}</Project>
       <Name>ZomboniLib</Name>
     </ProjectReference>
