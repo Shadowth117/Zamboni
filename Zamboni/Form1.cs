@@ -440,7 +440,7 @@ namespace zomForm
                     string fileName = Path.GetFileName(currFile);
                     string directoryName = Path.GetDirectoryName(currFile);
                     string str1 = !directoryName.Equals(basePath) ? Path.GetFileName(directoryName) : "";
-                    string str2 = Path.Combine(exportPath, str1 + Path.GetFileName(currFile) + "_ext");
+                    string str2 = Path.Combine(exportPath, str1 + "_" + Path.GetFileName(currFile) + "_ext");
                     if (!Directory.Exists(str2))
                         Directory.CreateDirectory(str2);
 
