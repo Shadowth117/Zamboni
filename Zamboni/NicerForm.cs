@@ -45,7 +45,11 @@ namespace zomFormNew
 
             if (fileDialog.ShowDialog() != DialogResult.OK)
                 return;
-            Form1.ExtractIce(Path.GetDirectoryName(fileDialog.FileName), "", fileDialog.FileName, groupFolders);
+            string result = Form1.ExtractIce(Path.GetDirectoryName(fileDialog.FileName), Path.GetDirectoryName(fileDialog.FileName), fileDialog.FileName, groupFolders);
+            if(result != null)
+            {
+                File.WriteAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "log.txt", result);
+            }
         }
 
         private void batchExtractIceButton_Click(object sender, EventArgs e)
@@ -59,7 +63,7 @@ namespace zomFormNew
             string basePath = batchFolderBrowserDialog.FileName;
             string exportPath = basePath + "\\";
             Directory.GetFiles(batchFolderBrowserDialog.FileName);
-            Form1.ExtractIceFromPath(batchFolderBrowserDialog.FileName, basePath, exportPath, groupFolders);
+            Form1.ExtractIceFromPath(batchFolderBrowserDialog.FileName, basePath, exportPath, groupFolders, searchSubCheck.Checked);
         }
 
         private void noGroupFolders_CheckedChanged(object sender, EventArgs e)

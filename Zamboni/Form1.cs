@@ -408,18 +408,32 @@ namespace zomForm
             if (this.textBox1.Text != "")
                 exportPath = !this.checkBox1.Checked ? this.textBox1.Text + "\\" : exportPath + this.textBox1.Text + "\\";
             Directory.GetFiles(this.batchFolderBrowserDialog.FileName);
-            ExtractIceFromPath(this.batchFolderBrowserDialog.FileName, basePath, exportPath, true);
+            ExtractIceFromPath(this.batchFolderBrowserDialog.FileName, basePath, exportPath, true, true);
         }
 
-        public static void ExtractIceFromPath(string extractPath, string basePath, string exportPath, bool useGroups)
+        public static void ExtractIceFromPath(string extractPath, string basePath, string exportPath, bool useGroups, bool searchSub, bool logging = true)
         {
-            Parallel.ForEach<string>(Directory.EnumerateFiles(extractPath, "*.*", SearchOption.AllDirectories), (Action<string>)(currFile =>
+            List<string> log = new List<string>();
+            var option = SearchOption.AllDirectories;
+            if (searchSub == false)
             {
-                ExtractIce(basePath, exportPath, currFile, useGroups);
+                option = SearchOption.TopDirectoryOnly;
+            }
+            Parallel.ForEach<string>(Directory.EnumerateFiles(extractPath, "*.*", option), (Action<string>)(currFile =>
+            {
+                string result = ExtractIce(basePath, exportPath, currFile, useGroups);
+                if(result != null)
+                {
+                    log.Add(result);
+                }
             }));
+            if(logging = true)
+            {
+                File.WriteAllLines(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "log.txt", log);
+            }
         }
 
-        public static void ExtractIce(string basePath, string exportPath, string currFile, bool useGroups)
+        public static string ExtractIce(string basePath, string exportPath, string currFile, bool useGroups)
         {
             byte[] buffer = System.IO.File.ReadAllBytes(currFile);
 #if DEBUG
@@ -427,10 +441,10 @@ namespace zomForm
 #endif
             try
             {
-                if (buffer.Length <= 352 || buffer[0] != (byte)73 || (buffer[1] != (byte)67 || buffer[2] != (byte)69) || buffer[3] != (byte)0 || buffer[8] == (byte)3)
+                if (buffer.Length <= 127 || buffer[0] != (byte)73 || (buffer[1] != (byte)67 || buffer[2] != (byte)69) || buffer[3] != (byte)0 )
                 {
                     buffer = null;
-                    return;
+                    return null;
                 }
 
                 IceFile iceFile = IceFile.LoadIceFile((Stream)new MemoryStream(buffer));
@@ -439,11 +453,10 @@ namespace zomForm
                 {
                     string fileName = Path.GetFileName(currFile);
                     string directoryName = Path.GetDirectoryName(currFile);
-                    string str1 = !directoryName.Equals(basePath) ? Path.GetFileName(directoryName) : "";
-                    string str2 = Path.Combine(exportPath, str1 + "_" + Path.GetFileName(currFile) + "_ext");
+                    string str1 = !directoryName.Equals(basePath) ? Path.GetFileName(directoryName) + "_" : "";
+                    string str2 = Path.Combine(exportPath, str1 + Path.GetFileName(currFile) + "_ext");
                     if (!Directory.Exists(str2))
                         Directory.CreateDirectory(str2);
-
                     /*using (FileStream fileStream = new FileStream(Path.Combine(str2, str1 + fileName + ".hdr"), FileMode.Create))
                         fileStream.Write(iceFile.header, 0, iceFile.header.Length);*/
                     string group1Path;
@@ -464,19 +477,20 @@ namespace zomForm
                     {
                         Console.WriteLine($"Neither group1 nor group2 was dumped from {Path.GetFileName(currFile)}.");
                     }
+                } else
+                {
+                    Console.WriteLine("Ice reading failed");
                 }
                 iceFile = null;
             }
             catch (Exception ex)
             {
-                if (buffer.Length <= 0x10 || buffer[0] != (byte)73 || (buffer[1] != (byte)67 || buffer[2] != (byte)69) || buffer[3] != (byte)0)
-                {
-                    buffer = null;
-                    return;
-                }
+                string error = currFile + "could not be extracted";
                 Console.WriteLine(currFile + "could not be extracted");
+                return error;
             }
             buffer = null;
+            return null;
         }
 
         protected override void Dispose(bool disposing)

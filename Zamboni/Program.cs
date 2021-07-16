@@ -138,7 +138,7 @@ namespace zamboni
                 {
                     Parallel.ForEach<string>(paths, (Action<string>)(path =>
                     {
-                    if (str3 == null || str3 == "")
+                        if (str3 == null || str3 == "")
                         {
                             strOut = "";
                         }
@@ -148,10 +148,14 @@ namespace zamboni
                         }
 
                         if (str2 == "")
-                    {
-                        str2 = Path.GetDirectoryName(path);
-                    }
-                    Form1.ExtractIce(str2, strOut, path, useGroups);
+                        {
+                            str2 = Path.GetDirectoryName(path);
+                        }
+                        string result = Form1.ExtractIce(str2, strOut, path, useGroups);
+                        if (result != null)
+                        {
+                            File.WriteAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "log.txt", result);
+                        }
                     }
                     ));
                 }

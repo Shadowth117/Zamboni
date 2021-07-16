@@ -32,6 +32,7 @@ namespace zomFormNew
             this.extractIceButton = new System.Windows.Forms.Button();
             this.batchExtractIceButton = new System.Windows.Forms.Button();
             this.useGroupFolders = new System.Windows.Forms.CheckBox();
+            this.searchSubCheck = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // extractIceButton
@@ -67,11 +68,24 @@ namespace zomFormNew
             this.useGroupFolders.UseVisualStyleBackColor = true;
             this.useGroupFolders.CheckedChanged += new System.EventHandler(this.noGroupFolders_CheckedChanged);
             // 
+            // searchSubCheck
+            // 
+            this.searchSubCheck.AutoSize = true;
+            this.searchSubCheck.Checked = true;
+            this.searchSubCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.searchSubCheck.Location = new System.Drawing.Point(119, 47);
+            this.searchSubCheck.Name = "searchSubCheck";
+            this.searchSubCheck.Size = new System.Drawing.Size(130, 17);
+            this.searchSubCheck.TabIndex = 3;
+            this.searchSubCheck.Text = "Search Subdirectories";
+            this.searchSubCheck.UseVisualStyleBackColor = true;
+            // 
             // NicerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(236, 74);
+            this.ClientSize = new System.Drawing.Size(255, 75);
+            this.Controls.Add(this.searchSubCheck);
             this.Controls.Add(this.useGroupFolders);
             this.Controls.Add(this.batchExtractIceButton);
             this.Controls.Add(this.extractIceButton);
@@ -87,5 +101,6 @@ namespace zomFormNew
         private System.Windows.Forms.Button extractIceButton;
         private System.Windows.Forms.Button batchExtractIceButton;
         private System.Windows.Forms.CheckBox useGroupFolders;
+        private System.Windows.Forms.CheckBox searchSubCheck;
     }
 }
