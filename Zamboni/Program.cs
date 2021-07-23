@@ -1,12 +1,8 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: zamboni.Program
-// Assembly: zamboni, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 73B487C9-8F41-4586-BEF5-F7D7BFBD4C55
-// Assembly location: D:\Downloads\zamboni_ngs (3)\zamboni.exe
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using zomForm;
@@ -19,19 +15,31 @@ namespace zamboni
         [STAThread]
         private static void Main(string[] commandLineArgs)
         {
+#if DEBUG
+ //           Debugger.Launch();
+#endif
             string str1 = "UI";
             List<string> paths = new List<string>();
+            List<string> outFileNames = new List<string>();
             string str2 = "";
             string str3 = "";
             bool useGroups = true;
             bool compress = false;
             bool forceUnencrypted = false;
+            bool useSubDirectories = true;
 
             //Check commands
             for (int index = 0; index < commandLineArgs.Length; ++index)
             {
                 switch (commandLineArgs[index])
                 {
+                    case "-outName":
+                        outFileNames.Add(commandLineArgs[index + 1]);
+                        ++index;
+                        break;
+                    case "-noSubDirUsage":
+                        useSubDirectories = false;
+                        break;
                     case "-noGroups":
                         useGroups = false;
                         break;
@@ -56,10 +64,10 @@ namespace zamboni
                     case "-v":
                         forceUnencrypted = true;
                         break;
-                    case "extract":
+                    case "-extract":
                         str1 = "extract";
                         break;
-                    case "pack":
+                    case "-pack":
                         str1 = "pack";
                         break;
                     default:
@@ -93,44 +101,19 @@ namespace zamboni
 
                 if (str1 == "pack")
                 {
-                    foreach(var path in paths)
+                    for(int i = 0; i < paths.Count; i++)
                     {
-                        
-                        if(str3 == null || str3 == "")
-                        {
-                            strOut = path + "_ext";
-                        } else
-                        {
-                            strOut = str3;
-                        }
+                        var path = paths[i];
 
-
-                        if (str2 == "")
+                        if(Directory.Exists(path))
                         {
-                            str2 = Path.GetDirectoryName(path);
+                            string outName = null;
+                            if(outFileNames.Count - 1 >= i)
+                            {
+                                outName = outFileNames[i];
+                            }
+                            UILogic.packIceFromDirectoryToFile(path, Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "group1.txt"), useSubDirectories, compress, forceUnencrypted, outName);
                         }
-                        Form1.buildIceFromDirectory(File.ReadAllLines(path), str2, strOut, compress, forceUnencrypted);
-                    }
-                }
-                //Extract all ice named in the text file.
-                else if(str1 == "extract")
-                {
-                    foreach (var path in paths)
-                    {
-                        if (str3 == null || str3 == "")
-                        {
-                            strOut = path + "_ext";
-                        }
-                        else
-                        {
-                            strOut = str3;
-                        }
-
-                        if (str2 == "")
-                        {
-                            str2 = Path.GetDirectoryName(path);
-                        }
-                        Form1.exportFilesToDirectory(File.ReadAllLines(path), str2, strOut);
                     }
                 }
                 //Extract all ice from paths given

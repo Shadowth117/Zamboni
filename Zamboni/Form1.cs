@@ -141,6 +141,8 @@ namespace zomForm
                 int int32 = BitConverter.ToInt32(groupToWrite[index], 16);
                 string str = Encoding.ASCII.GetString(groupToWrite[index], 64, int32).TrimEnd(new char[1]);
 
+                //System.IO.File.WriteAllBytes(directory + "\\" + str + ".full", groupToWrite[index]);
+
                 int iceHeaderSize = BitConverter.ToInt32(groupToWrite[index], 0xC);
                 int newLength = groupToWrite[index].Length - iceHeaderSize;
                 byte[] file = new byte[newLength];
@@ -331,7 +333,12 @@ namespace zomForm
                 try
                 {
                     webClient.Headers.Add("user-agent", "AQUA_HTTP");
-                    webClient.DownloadFile("http://download.pso2.jp/patch_prod/patches/data/win32/" + strArray[0] + ".pat", directoryToSave + "\\" + strArray[0]);
+                    //webClient.DownloadFile("http://download.pso2.jp/patch_prod/head_rc_4161_masterbase/patches/" + "launcherlist.txt", directoryToSave + "\\" + "launcherlist.txt");
+                    //webClient.DownloadFile("http://download.pso2.jp/patch_prod/v70000_rc_180_872FCD51/patches/" + "patchlist_region1st.txt", directoryToSave + "\\" + "patchlist_region1st.txt");
+                    //webClient.DownloadFile("http://download.pso2.jp/patch_prod/head_rc_4161_masterbase/patches/data/win32/" + "00049841d10e1e00b22f84204f8b092e" + ".pat", directoryToSave + "\\" + "00049841d10e1e00b22f84204f8b092e");
+                    //webClient.DownloadFile("http://download.pso2.jp/patch_prod/head_rc_4161_masterbase/patches/data/win32/" + strArray[0] + ".pat", directoryToSave + "\\" + strArray[0]);
+                    webClient.DownloadFile("http://download.pso2.jp/patch_prod/v70000_rc_180_872FCD51/patches/data/win32reboot/9c/a433e75e9cef9c6d0a318bde62bda6" + ".pat", directoryToSave + "\\" + "9ca433e75e9cef9c6d0a318bde62bda6");
+                    //webClient.DownloadFile("http://download.pso2.jp/patch_prod/patches/data/win32/" + strArray[0] + ".pat", directoryToSave + "\\" + strArray[0]);
                     streamWriter.WriteLine(strArray[0] + "\tpatches");
                     streamWriter.Flush();
                 }
@@ -340,7 +347,7 @@ namespace zomForm
                     try
                     {
                         webClient.Headers.Add("user-agent", "AQUA_HTTP");
-                        webClient.DownloadFile("http://download.pso2.jp/patch_prod/patches_old/data/win32/" + strArray[0] + ".pat", directoryToSave + "\\" + strArray[0]);
+                        webClient.DownloadFile("http://sub-download.pso2.jp/patch_prod/head_rc_4161_masterbase/patches/data/win32/" + strArray[0] + ".pat", directoryToSave + "\\" + strArray[0]);
                         streamWriter.WriteLine(strArray[0] + "\told patches");
                         streamWriter.Flush();
                     }
@@ -457,8 +464,10 @@ namespace zomForm
                     string str2 = Path.Combine(exportPath, str1 + Path.GetFileName(currFile) + "_ext");
                     if (!Directory.Exists(str2))
                         Directory.CreateDirectory(str2);
-                    /*using (FileStream fileStream = new FileStream(Path.Combine(str2, str1 + fileName + ".hdr"), FileMode.Create))
-                        fileStream.Write(iceFile.header, 0, iceFile.header.Length);*/
+
+                    //using (FileStream fileStream = new FileStream(Path.Combine(str2, str1 + fileName + ".hdr"), FileMode.Create))
+                      //  fileStream.Write(iceFile.header, 0, iceFile.header.Length);
+
                     string group1Path;
                     string group2Path;
                     if(useGroups)

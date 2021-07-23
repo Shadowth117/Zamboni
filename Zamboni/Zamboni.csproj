@@ -175,6 +175,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UILogic.cs" />
     <EmbeddedResource Include="NicerForm.resx">
       <DependentUpon>NicerForm.cs</DependentUpon>
     </EmbeddedResource>

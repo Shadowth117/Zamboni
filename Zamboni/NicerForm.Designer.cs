@@ -33,6 +33,7 @@ namespace zomFormNew
             this.batchExtractIceButton = new System.Windows.Forms.Button();
             this.useGroupFolders = new System.Windows.Forms.CheckBox();
             this.searchSubCheck = new System.Windows.Forms.CheckBox();
+            this.packIceButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // extractIceButton
@@ -80,11 +81,22 @@ namespace zomFormNew
             this.searchSubCheck.Text = "Search Subdirectories";
             this.searchSubCheck.UseVisualStyleBackColor = true;
             // 
+            // packIceButton
+            // 
+            this.packIceButton.Location = new System.Drawing.Point(13, 73);
+            this.packIceButton.Name = "packIceButton";
+            this.packIceButton.Size = new System.Drawing.Size(97, 23);
+            this.packIceButton.TabIndex = 4;
+            this.packIceButton.Text = "Pack Ice";
+            this.packIceButton.UseVisualStyleBackColor = true;
+            this.packIceButton.Click += new System.EventHandler(this.packIceButton_Click);
+            // 
             // NicerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(255, 75);
+            this.ClientSize = new System.Drawing.Size(255, 107);
+            this.Controls.Add(this.packIceButton);
             this.Controls.Add(this.searchSubCheck);
             this.Controls.Add(this.useGroupFolders);
             this.Controls.Add(this.batchExtractIceButton);
@@ -102,5 +114,6 @@ namespace zomFormNew
         private System.Windows.Forms.Button batchExtractIceButton;
         private System.Windows.Forms.CheckBox useGroupFolders;
         private System.Windows.Forms.CheckBox searchSubCheck;
+        private System.Windows.Forms.Button packIceButton;
     }
 }
