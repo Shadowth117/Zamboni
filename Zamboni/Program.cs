@@ -112,7 +112,9 @@ namespace zamboni
                             {
                                 outName = outFileNames[i];
                             }
-                            UILogic.packIceFromDirectoryToFile(path, Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "group1.txt"), useSubDirectories, compress, forceUnencrypted, outName);
+                            UILogic.packIceFromDirectoryToFile(path, 
+                                UILogic.ReadWhiteList(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "group1.txt")),
+                                useSubDirectories, compress, true, forceUnencrypted, null);
                         }
                     }
                 }

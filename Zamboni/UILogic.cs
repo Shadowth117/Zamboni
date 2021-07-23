@@ -113,10 +113,11 @@ namespace zomFormNew
                 }
 
                 //Sort basaed on loaded whitelist
-                if (group1WhiteList.Any(v => realName.Contains(v)) || (useFolderGroup && currfile.Contains("\\group1\\")))
+                if (CheckIfGroup1(group1WhiteList, useFolderGroup, currfile, realName))
                 {
                     group1temp.Add(file.ToArray());
-                } else
+                }
+                else
                 {
                     group2temp.Add(file.ToArray());
                 }
@@ -165,6 +166,23 @@ namespace zomFormNew
 
             group1 = group1temp.ToArray();
             group2 = group2temp.ToArray();
+        }
+
+        private static bool CheckIfGroup1(List<string> group1WhiteList, bool useFolderGroup, string currfile, string realName)
+        {
+            if (useFolderGroup && currfile.Contains("\\group"))
+            {
+                if (currfile.Contains("\\group1\\"))
+                {
+                    return true;
+                }
+            }
+            else if (group1WhiteList.Any(v => realName.Contains(v)))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

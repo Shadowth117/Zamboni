@@ -67,7 +67,6 @@ namespace zomFormNew
             this.useGroupFolders.TabIndex = 2;
             this.useGroupFolders.Text = "Use group folders";
             this.useGroupFolders.UseVisualStyleBackColor = true;
-            this.useGroupFolders.CheckedChanged += new System.EventHandler(this.noGroupFolders_CheckedChanged);
             // 
             // searchSubCheck
             // 
