@@ -102,7 +102,7 @@ namespace zomFormNew
             var group1temp = new List<byte[]>();
             var group2temp = new List<byte[]>();
 
-            Parallel.ForEach(files, currfile =>
+            foreach(var currfile in files)
             {
                 List<byte> file = new List<byte>(System.IO.File.ReadAllBytes(currfile));
                 var realName = Path.GetFileName(currfile);
@@ -121,7 +121,7 @@ namespace zomFormNew
                 {
                     group2temp.Add(file.ToArray());
                 }
-            });
+            }
 
             group1 = group1temp.ToArray();
             group2 = group2temp.ToArray();
@@ -136,7 +136,7 @@ namespace zomFormNew
             var group1temp = new List<byte[]>();
             var group2temp = new List<byte[]>();
 
-            Parallel.For(0, fileNames.Length, i =>
+            for(int i = 0; i < fileNames.Length; i++)
             {
                 string fileName = fileNames[i];
                 List<byte> file = new List<byte>(fileData[i]);
@@ -162,7 +162,7 @@ namespace zomFormNew
                 {
                     group2temp.Add(file.ToArray());
                 }
-            });
+            }
 
             group1 = group1temp.ToArray();
             group2 = group2temp.ToArray();
