@@ -78,5 +78,19 @@ namespace zomFormNew
                 UILogic.ReadWhiteList(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "group1.txt")),
                 searchSubCheck.Checked, useGroupFolders.Checked, false, false);
         }
+
+        private void batchListIceContentsButton_Click(object sender, EventArgs e)
+        {
+            CommonOpenFileDialog batchFolderBrowserDialog = new CommonOpenFileDialog();
+            batchFolderBrowserDialog.IsFolderPicker = true;
+            batchFolderBrowserDialog.Title = "Select a base directory";
+
+            if (batchFolderBrowserDialog.ShowDialog() != CommonFileDialogResult.Ok)
+                return;
+            string basePath = batchFolderBrowserDialog.FileName;
+            string exportPath = basePath + "\\";
+            Directory.GetFiles(batchFolderBrowserDialog.FileName);
+            Form1.ListIceFromPath(batchFolderBrowserDialog.FileName, basePath, exportPath, useGroupFolders.Checked, searchSubCheck.Checked);
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using zomForm;
@@ -99,50 +100,64 @@ namespace zamboni
             {
                 string strOut;
 
-                if (str1 == "pack")
+                switch(str1)
                 {
-                    for(int i = 0; i < paths.Count; i++)
-                    {
-                        var path = paths[i];
-
-                        if(Directory.Exists(path))
+                    case "pack":
+                        for (int i = 0; i < paths.Count; i++)
                         {
-                            string outName = null;
-                            if(outFileNames.Count - 1 >= i)
+                            var path = paths[i];
+
+                            if (Directory.Exists(path))
                             {
-                                outName = outFileNames[i];
+                                string outName = null;
+                                if (outFileNames.Count - 1 >= i)
+                                {
+                                    outName = outFileNames[i];
+                                }
+                                UILogic.packIceFromDirectoryToFile(path,
+                                    UILogic.ReadWhiteList(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "group1.txt")),
+                                    useSubDirectories, compress, true, forceUnencrypted, null);
                             }
-                            UILogic.packIceFromDirectoryToFile(path, 
-                                UILogic.ReadWhiteList(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "group1.txt")),
-                                useSubDirectories, compress, true, forceUnencrypted, null);
                         }
-                    }
-                }
-                //Extract all ice from paths given
-                else if (str1 == "extractNoTxt")
-                {
-                    Parallel.ForEach<string>(paths, (Action<string>)(path =>
-                    {
-                        if (str3 == null || str3 == "")
+                        break;
+                    case "extractNoTxt": //Extract all ice from paths given
+                        Parallel.ForEach<string>(paths, (Action<string>)(path =>
                         {
-                            strOut = "";
-                        }
-                        else
-                        {
-                            strOut = str3;
-                        }
+                            if (str3 == null || str3 == "")
+                            {
+                                strOut = "";
+                            }
+                            else
+                            {
+                                strOut = str3;
+                            }
 
-                        if (str2 == "")
-                        {
-                            str2 = Path.GetDirectoryName(path);
+                            if (str2 == "")
+                            {
+                                str2 = Path.GetDirectoryName(path);
+                            }
+                            string result = Form1.ExtractIce(str2, strOut, path, useGroups);
+                            if (result != null)
+                            {
+                                File.WriteAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "log.txt", result);
+                            }
                         }
-                        string result = Form1.ExtractIce(str2, strOut, path, useGroups);
-                        if (result != null)
+                        ));
+                        break;
+                    case "list":
+                        StringBuilder sb = new StringBuilder();
+                        Parallel.ForEach<string>(paths, (Action<string>)(path =>
                         {
-                            File.WriteAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "log.txt", result);
+                            if (str2 == "")
+                            {
+                                str2 = Path.GetDirectoryName(path);
+                            }
+                            sb.Append(Form1.ListIce(str2, path));
                         }
-                    }
-                    ));
+                        ));
+
+                        File.WriteAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "IceFileList.txt", sb.ToString());
+                        break;
                 }
             }
         }

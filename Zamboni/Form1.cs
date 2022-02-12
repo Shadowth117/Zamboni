@@ -4,6 +4,7 @@
 // MVID: 73B487C9-8F41-4586-BEF5-F7D7BFBD4C55
 // Assembly location: D:\Downloads\zamboni_ngs (3)\zamboni.exe
 
+using System.Linq;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -436,7 +437,7 @@ namespace zomForm
             }));
             if(logging = true)
             {
-                File.WriteAllLines(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "log.txt", log);
+                File.WriteAllLines(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\log.txt", log);
             }
         }
 
@@ -494,12 +495,117 @@ namespace zomForm
             }
             catch (Exception ex)
             {
-                string error = currFile + "could not be extracted";
-                Console.WriteLine(currFile + "could not be extracted");
+                string error = currFile + " could not be extracted";
+                Console.WriteLine(currFile + " could not be extracted");
                 return error;
             }
             buffer = null;
             return null;
+        }
+
+        public static void ListIceFromPath(string extractPath, string basePath, string exportPath, bool useGroups, bool searchSub)
+        {
+            StringBuilder log = new StringBuilder();
+            var option = SearchOption.AllDirectories;
+            if (searchSub == false)
+            {
+                option = SearchOption.TopDirectoryOnly;
+            }
+            Dictionary<string, StringBuilder> sbDict = new Dictionary<string, StringBuilder>();
+            var filesE = Directory.EnumerateFiles(extractPath, "*.*", option);
+            List<string> files = filesE.ToList();
+            files.Sort();
+
+            foreach(string str in files)
+            {
+                log.Append(ListIce(basePath, str));
+            }
+            File.WriteAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\IceFileList.txt", log.ToString());
+        }
+
+        public static StringBuilder ListIce(string basePath, string currFile)
+        {
+            StringBuilder sb = new StringBuilder();
+            byte[] buffer = System.IO.File.ReadAllBytes(currFile);
+            if(buffer.Length < 4)
+            {
+                var earlyOut = currFile.Replace(basePath, "") + " " + Path.GetExtension(currFile);
+                earlyOut = earlyOut.Substring(1);
+                sb.AppendLine(earlyOut);
+                return sb;
+            }
+
+            int extTest = BitConverter.ToInt32(buffer, 0);
+            string extension;
+
+            switch(extTest)
+            {
+                case 0xC1C3C8: //HCA
+                    extension = "HCA";
+                    break;
+                case 0x32534641: //AFS2
+                    extension = "AWB";
+                    break;
+                default:
+                    byte[] typeBuffer = new byte[4];
+                    Array.Copy(buffer, 0, typeBuffer, 0, 4);
+                    extension = Encoding.ASCII.GetString(typeBuffer);
+                    break;
+            }
+            var zeroIndex = extension.IndexOf(char.MinValue);
+            if(zeroIndex > 0)
+            {
+                extension = extension.Remove(zeroIndex);
+            }
+            extension = extension.Replace("?", "");
+
+            var stringOut = currFile.Replace(basePath, "") + " " + extension;
+            stringOut = stringOut.Substring(1);
+            sb.AppendLine(stringOut);
+#if DEBUG
+            //      Console.WriteLine(currFile);
+#endif
+            try
+            {
+                if (buffer.Length <= 127 || buffer[0] != (byte)73 || (buffer[1] != (byte)67 || buffer[2] != (byte)69) || buffer[3] != (byte)0)
+                {
+                    buffer = null;
+                    return sb;
+                }
+
+                IceFile iceFile = IceFile.LoadIceFile((Stream)new MemoryStream(buffer));
+
+                if (iceFile != null)
+                {
+                    if(iceFile.groupOneFiles.Length > 0)
+                    {
+                        sb.AppendLine("  Group 1 Contents:");
+                        foreach (var file in iceFile.groupOneFiles)
+                        {
+                            sb.AppendLine("    " + IceFile.getFileName(file));
+                        }
+                    }
+
+                    if (iceFile.groupTwoFiles.Length > 0)
+                    {
+                        sb.AppendLine("  Group 2 Contents:");
+                        foreach (var file in iceFile.groupTwoFiles)
+                        {
+                            sb.AppendLine("    " + IceFile.getFileName(file));
+                        }
+                    }
+                }
+                else
+                {
+                    sb.AppendLine(Path.GetFileName(currFile) + " could not be extracted");
+                }
+                iceFile = null;
+            }
+            catch (Exception ex)
+            {
+                sb.AppendLine(Path.GetFileName(currFile) + " could not be extracted");
+            }
+            return sb;
         }
 
         protected override void Dispose(bool disposing)
