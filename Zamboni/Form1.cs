@@ -559,7 +559,8 @@ namespace zomForm
             }
             extension = extension.Replace("?", "");
 
-            var stringOut = currFile.Replace(basePath, "") + " " + extension;
+            var path = currFile.Replace(basePath, "");
+            var stringOut = path + " " + extension;
             stringOut = stringOut.Substring(1);
             sb.AppendLine(stringOut);
 #if DEBUG
@@ -582,7 +583,7 @@ namespace zomForm
                         sb.AppendLine("  Group 1 Contents:");
                         foreach (var file in iceFile.groupOneFiles)
                         {
-                            sb.AppendLine("    " + IceFile.getFileName(file));
+                            sb.AppendLine("    " + path + " " + IceFile.getFileName(file));
                         }
                     }
 
@@ -591,7 +592,7 @@ namespace zomForm
                         sb.AppendLine("  Group 2 Contents:");
                         foreach (var file in iceFile.groupTwoFiles)
                         {
-                            sb.AppendLine("    " + IceFile.getFileName(file));
+                            sb.AppendLine("    " + path + " " + IceFile.getFileName(file));
                         }
                     }
                 }

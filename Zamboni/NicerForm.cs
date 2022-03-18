@@ -76,7 +76,7 @@ namespace zomFormNew
                 return;
             UILogic.packIceFromDirectoryToFile(batchFolderBrowserDialog.FileName, 
                 UILogic.ReadWhiteList(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "group1.txt")),
-                searchSubCheck.Checked, useGroupFolders.Checked, false, false);
+                searchSubCheck.Checked, false, useGroupFolders.Checked, false, null);
         }
 
         private void batchListIceContentsButton_Click(object sender, EventArgs e)
