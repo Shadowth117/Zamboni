@@ -4,18 +4,19 @@
 // MVID: 73B487C9-8F41-4586-BEF5-F7D7BFBD4C55
 // Assembly location: D:\Downloads\zamboni_ngs (3)\zamboni.exe
 
-using System.Linq;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using zamboni;
+using Zamboni;
+using Zamboni.IceFileFormats;
 
 namespace zomForm
 {
@@ -139,24 +140,29 @@ namespace zomForm
                 Directory.CreateDirectory(directory);
             for (int index = 0; index < groupToWrite.Length; ++index)
             {
-                int int32 = BitConverter.ToInt32(groupToWrite[index], 16);
-                string str = Encoding.ASCII.GetString(groupToWrite[index], 64, int32).TrimEnd(new char[1]);
-
-                //System.IO.File.WriteAllBytes(directory + "\\" + str + ".full", groupToWrite[index]);
-
-                int iceHeaderSize = BitConverter.ToInt32(groupToWrite[index], 0xC);
-                int newLength = groupToWrite[index].Length - iceHeaderSize;
-                byte[] file = new byte[newLength];
-                Array.ConstrainedCopy(groupToWrite[index], iceHeaderSize, file, 0, newLength);
+                string str = IceFile.getFileName(groupToWrite[index]);
+                byte[] file;
+                if (str == "namelessFile.bin")
+                {
+                    file = groupToWrite[index];
+                }
+                else
+                {
+                    int iceHeaderSize = BitConverter.ToInt32(groupToWrite[index], 0xC);
+                    int newLength = groupToWrite[index].Length - iceHeaderSize;
+                    file = new byte[newLength];
+                    Array.ConstrainedCopy(groupToWrite[index], iceHeaderSize, file, 0, newLength);
+                }
                 System.IO.File.WriteAllBytes(directory + "\\" + str, file);
                 file = null;
                 groupToWrite[index] = null;
             }
 
-            if(groupToWrite == null || (uint)groupToWrite.Length == 0)
+            if (groupToWrite == null || (uint)groupToWrite.Length == 0)
             {
                 return false;
-            } else
+            }
+            else
             {
                 return true;
             }
@@ -227,8 +233,7 @@ namespace zomForm
                     Directory.CreateDirectory(directoryName + "\\" + Path.GetFileNameWithoutExtension(this.extractOpenDialog.FileName) + "_group_1");
                 for (int index = 0; index < groupOneFiles.Length; ++index)
                 {
-                    int int32_1 = BitConverter.ToInt32(groupOneFiles[index], 16);
-                    string str = Encoding.ASCII.GetString(groupOneFiles[index], 64, int32_1).TrimEnd(new char[1]);
+                    string str = IceFile.getFileName(groupOneFiles[index]);
                     if (str.EndsWith(".lua"))
                     {
                         int int32_2 = BitConverter.ToInt32(groupOneFiles[index], 12);
@@ -247,8 +252,7 @@ namespace zomForm
                     Directory.CreateDirectory(directoryName + "\\" + Path.GetFileNameWithoutExtension(this.extractOpenDialog.FileName) + "_group_2");
                 for (int index = 0; index < groupTwoFiles.Length; ++index)
                 {
-                    int int32 = BitConverter.ToInt32(groupTwoFiles[index], 16);
-                    string str = Encoding.ASCII.GetString(groupTwoFiles[index], 64, int32).TrimEnd(new char[1]);
+                    string str = IceFile.getFileName(groupTwoFiles[index]);
                     System.IO.File.WriteAllBytes(directoryName + "\\" + Path.GetFileNameWithoutExtension(this.extractOpenDialog.FileName) + "_group_2\\" + str, groupTwoFiles[index]);
                 }
             }
@@ -285,8 +289,7 @@ namespace zomForm
                                     byte[][] groupOneFiles = iceFile.groupOneFiles;
                                     for (int index = 0; index < groupOneFiles.Length; ++index)
                                     {
-                                        int int32 = BitConverter.ToInt32(groupOneFiles[index], 16);
-                                        string str2 = Encoding.ASCII.GetString(groupOneFiles[index], 64, int32).TrimEnd(new char[1]);
+                                        string str2 = IceFile.getFileName(groupOneFiles[index]);
                                         streamWriter.WriteLine("\t\t" + str2);
                                     }
                                 }
@@ -296,8 +299,7 @@ namespace zomForm
                                     byte[][] groupTwoFiles = iceFile.groupTwoFiles;
                                     for (int index = 0; index < groupTwoFiles.Length; ++index)
                                     {
-                                        int int32 = BitConverter.ToInt32(groupTwoFiles[index], 16);
-                                        string str2 = Encoding.ASCII.GetString(groupTwoFiles[index], 64, int32).TrimEnd(new char[1]);
+                                        string str2 = IceFile.getFileName(groupTwoFiles[index]);
                                         streamWriter.WriteLine("\t\t" + str2);
                                     }
                                 }
@@ -430,12 +432,12 @@ namespace zomForm
             Parallel.ForEach<string>(Directory.EnumerateFiles(extractPath, "*.*", option), (Action<string>)(currFile =>
             {
                 string result = ExtractIce(basePath, exportPath, currFile, useGroups);
-                if(result != null)
+                if (result != null)
                 {
                     log.Add(result);
                 }
             }));
-            if(logging = true)
+            if (logging = true)
             {
                 File.WriteAllLines(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\log.txt", log);
             }
@@ -449,7 +451,7 @@ namespace zomForm
 #endif
             try
             {
-                if (buffer.Length <= 127 || buffer[0] != (byte)73 || (buffer[1] != (byte)67 || buffer[2] != (byte)69) || buffer[3] != (byte)0 )
+                if (buffer.Length <= 127 || buffer[0] != (byte)73 || (buffer[1] != (byte)67 || buffer[2] != (byte)69) || buffer[3] != (byte)0)
                 {
                     buffer = null;
                     return null;
@@ -467,15 +469,16 @@ namespace zomForm
                         Directory.CreateDirectory(str2);
 
                     //using (FileStream fileStream = new FileStream(Path.Combine(str2, str1 + fileName + ".hdr"), FileMode.Create))
-                      //  fileStream.Write(iceFile.header, 0, iceFile.header.Length);
+                    //  fileStream.Write(iceFile.header, 0, iceFile.header.Length);
 
                     string group1Path;
                     string group2Path;
-                    if(useGroups)
+                    if (useGroups)
                     {
                         group1Path = Path.Combine(exportPath, Path.Combine(str2, "group1"));
                         group2Path = Path.Combine(exportPath, Path.Combine(str2, "group2"));
-                    } else
+                    }
+                    else
                     {
                         group1Path = str2;
                         group2Path = str2;
@@ -487,7 +490,8 @@ namespace zomForm
                     {
                         Console.WriteLine($"Neither group1 nor group2 was dumped from {Path.GetFileName(currFile)}.");
                     }
-                } else
+                }
+                else
                 {
                     Console.WriteLine("Ice reading failed");
                 }
@@ -516,7 +520,7 @@ namespace zomForm
             List<string> files = filesE.ToList();
             files.Sort();
 
-            foreach(string str in files)
+            foreach (string str in files)
             {
                 log.Append(ListIce(basePath, str));
             }
@@ -527,7 +531,7 @@ namespace zomForm
         {
             StringBuilder sb = new StringBuilder();
             byte[] buffer = System.IO.File.ReadAllBytes(currFile);
-            if(buffer.Length < 4)
+            if (buffer.Length < 4)
             {
                 var earlyOut = currFile.Replace(basePath, "") + " " + Path.GetExtension(currFile);
                 earlyOut = earlyOut.Substring(1);
@@ -538,7 +542,7 @@ namespace zomForm
             int extTest = BitConverter.ToInt32(buffer, 0);
             string extension;
 
-            switch(extTest)
+            switch (extTest)
             {
                 case 0xC1C3C8: //HCA
                     extension = "HCA";
@@ -553,7 +557,7 @@ namespace zomForm
                     break;
             }
             var zeroIndex = extension.IndexOf(char.MinValue);
-            if(zeroIndex > 0)
+            if (zeroIndex > 0)
             {
                 extension = extension.Remove(zeroIndex);
             }
@@ -578,7 +582,7 @@ namespace zomForm
 
                 if (iceFile != null)
                 {
-                    if(iceFile.groupOneFiles.Length > 0)
+                    if (iceFile.groupOneFiles.Length > 0)
                     {
                         sb.AppendLine("  Group 1 Contents:");
                         foreach (var file in iceFile.groupOneFiles)
@@ -606,6 +610,7 @@ namespace zomForm
             {
                 sb.AppendLine(Path.GetFileName(currFile) + " could not be extracted");
             }
+
             return sb;
         }
 

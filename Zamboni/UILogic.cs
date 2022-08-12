@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using zamboni;
+using Zamboni.IceFileFormats;
 
 namespace zomFormNew
 {
