@@ -93,7 +93,7 @@ namespace zomFormNew
 
         public static void loadFilesFromDirectory(string path, bool searchSub, List<string> group1WhiteList, out byte[][] group1, out byte[][] group2, bool useFolderGroup, bool headerless = true)
         {
-            ASCIIStringComp asciiSort = new ASCIIStringComp();
+            //ASCIIStringComp asciiSort = new ASCIIStringComp();
             string[] files;
             if (searchSub == true)
             {
@@ -102,7 +102,8 @@ namespace zomFormNew
             {
                 files = Directory.GetFiles(path);
             }
-            Array.Sort(files, asciiSort);
+            Array.Sort(files);
+            //Array.Sort(files, asciiSort);
             var group1temp = new List<byte[]>();
             var group2temp = new List<byte[]>();
 
@@ -196,6 +197,7 @@ namespace zomFormNew
         }
 
         //Sorts files the way sega's packer does. Probably meaningless, but gets it closer to sega's original output.
+        /*
         public class ASCIIStringComp : IComparer<string>
         {
             // Compares by Height, Length, and Width.
@@ -224,6 +226,6 @@ namespace zomFormNew
 
                 return 0;
             }
-        }
+        }*/
     }
 }
