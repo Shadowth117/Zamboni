@@ -25,7 +25,7 @@ namespace zamboni
             string str2 = "";
             string str3 = "";
             bool useGroups = true;
-            bool compress = false;
+            bool compress = true;
             bool forceUnencrypted = false;
             bool useSubDirectories = true;
 
@@ -49,6 +49,9 @@ namespace zamboni
                         break;
                     case "-compress":
                         compress = true;
+                        break;
+                    case "-nocompress":
+                        compress = false;
                         break;
                     case "-indir":
                         str2 = commandLineArgs[index + 1];
@@ -139,7 +142,7 @@ namespace zamboni
                             string result = Form1.ExtractIce(str2, strOut, path, useGroups);
                             if (result != null)
                             {
-                                File.WriteAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "log.txt", result);
+                                File.WriteAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\log.txt", result);
                             }
                         }
                         ));

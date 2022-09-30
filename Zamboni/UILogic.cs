@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace zomFormNew
                 return;
             loadFilesFromDirectory(path, searchSub, group1WhiteList, out byte[][] groupOneIn, out byte[][] groupTwoIn, useFolderGroup, true);
 
-            byte[] rawData = new IceV4File((new IceHeaderStructures.IceArchiveHeader()).GetBytes(), groupOneIn, groupTwoIn).getRawData(compress, forceUnencrypted);
+            byte[] rawData = new IceV4File((new IceHeaderStructures.IceArchiveHeader(compress)).GetBytes(), groupOneIn, groupTwoIn).getRawData(compress, forceUnencrypted);
             newFilename = GetTrueFileName(path, newFilename);
 
             File.WriteAllBytes(newFilename, rawData);
@@ -29,7 +30,7 @@ namespace zomFormNew
                 return null;
             loadFilesFromDirectory(path, searchSub, group1WhiteList, out byte[][] groupOneIn, out byte[][] groupTwoIn, useFolderGroup, true);
 
-            byte[] rawData = new IceV4File((new IceHeaderStructures.IceArchiveHeader()).GetBytes(), groupOneIn, groupTwoIn).getRawData(compress, forceUnencrypted);
+            byte[] rawData = new IceV4File((new IceHeaderStructures.IceArchiveHeader(compress)).GetBytes(), groupOneIn, groupTwoIn).getRawData(compress, forceUnencrypted);
 
             return rawData;
         }
@@ -38,7 +39,7 @@ namespace zomFormNew
         {
             loadFilesFromMemory(fileNames, files, group1WhiteList, presetGroups, out byte[][] groupOneIn, out byte[][] groupTwoIn, true);
 
-            byte[] rawData = new IceV4File((new IceHeaderStructures.IceArchiveHeader()).GetBytes(), groupOneIn, groupTwoIn).getRawData(compress, forceUnencrypted);
+            byte[] rawData = new IceV4File((new IceHeaderStructures.IceArchiveHeader(compress)).GetBytes(), groupOneIn, groupTwoIn).getRawData(compress, forceUnencrypted);
             
             return rawData;
         }
@@ -47,7 +48,7 @@ namespace zomFormNew
         {
             loadFilesFromMemory(fileNames, files, group1WhiteList, presetGroups, out byte[][] groupOneIn, out byte[][] groupTwoIn, true);
 
-            byte[] rawData = new IceV4File((new IceHeaderStructures.IceArchiveHeader()).GetBytes(), groupOneIn, groupTwoIn).getRawData(compress, forceUnencrypted);
+            byte[] rawData = new IceV4File((new IceHeaderStructures.IceArchiveHeader(compress)).GetBytes(), groupOneIn, groupTwoIn).getRawData(compress, forceUnencrypted);
             GetTrueFileName(path, newFilename);
 
             File.WriteAllBytes(newFilename, rawData);
@@ -92,6 +93,7 @@ namespace zomFormNew
 
         public static void loadFilesFromDirectory(string path, bool searchSub, List<string> group1WhiteList, out byte[][] group1, out byte[][] group2, bool useFolderGroup, bool headerless = true)
         {
+            ASCIIStringComp asciiSort = new ASCIIStringComp();
             string[] files;
             if (searchSub == true)
             {
@@ -100,6 +102,7 @@ namespace zomFormNew
             {
                 files = Directory.GetFiles(path);
             }
+            Array.Sort(files, asciiSort);
             var group1temp = new List<byte[]>();
             var group2temp = new List<byte[]>();
 
@@ -107,6 +110,12 @@ namespace zomFormNew
             {
                 List<byte> file = new List<byte>(System.IO.File.ReadAllBytes(currfile));
                 var realName = Path.GetFileName(currfile);
+
+                if(file.Count == 0)
+                {
+                    continue;
+                }
+
                 //Add header as needed
                 if (headerless == true)
                 {
@@ -184,6 +193,37 @@ namespace zomFormNew
             }
 
             return false;
+        }
+
+        //Sorts files the way sega's packer does. Probably meaningless, but gets it closer to sega's original output.
+        public class ASCIIStringComp : IComparer<string>
+        {
+            // Compares by Height, Length, and Width.
+            public int Compare(string x, string y)
+            {
+                for (int i = 0; i < Math.Max(x.Length, y.Length); i++)
+                {
+                    Console.WriteLine(x[i] + " " + y[i]);
+                    if ((int)x[i] < (int)y[i])
+                    {
+                        return -1;
+                    }
+                    else if ((int)x[i] > (int)y[i])
+                    {
+                        return 1;
+                    }
+                }
+                if (x.Length > y.Length)
+                {
+                    return -1;
+                }
+                else if (x.Length < y.Length)
+                {
+                    return 1;
+                }
+
+                return 0;
+            }
         }
     }
 }

@@ -37,6 +37,7 @@ namespace zomFormNew
             this.batchListIceContentsButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.compressCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // extractIceButton
@@ -121,11 +122,24 @@ namespace zomFormNew
             this.label2.TabIndex = 7;
             this.label2.Text = "on all Ice take a LONG time.";
             // 
+            // compressCheckBox
+            // 
+            this.compressCheckBox.AutoSize = true;
+            this.compressCheckBox.Checked = true;
+            this.compressCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.compressCheckBox.Location = new System.Drawing.Point(157, 76);
+            this.compressCheckBox.Name = "compressCheckBox";
+            this.compressCheckBox.Size = new System.Drawing.Size(72, 17);
+            this.compressCheckBox.TabIndex = 8;
+            this.compressCheckBox.Text = "Compress";
+            this.compressCheckBox.UseVisualStyleBackColor = true;
+            // 
             // NicerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(255, 129);
+            this.Controls.Add(this.compressCheckBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.batchListIceContentsButton);
@@ -151,5 +165,6 @@ namespace zomFormNew
         private System.Windows.Forms.Button batchListIceContentsButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox compressCheckBox;
     }
 }

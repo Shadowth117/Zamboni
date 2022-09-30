@@ -8,6 +8,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -153,6 +154,7 @@ namespace zomForm
                     file = new byte[newLength];
                     Array.ConstrainedCopy(groupToWrite[index], iceHeaderSize, file, 0, newLength);
                 }
+                Debug.WriteLine($"{str} - {file.Length}");
                 System.IO.File.WriteAllBytes(directory + "\\" + str, file);
                 file = null;
                 groupToWrite[index] = null;

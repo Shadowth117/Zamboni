@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Zamboni;
 using zomForm;
 
 namespace zomFormNew
@@ -76,7 +78,7 @@ namespace zomFormNew
                 return;
             UILogic.packIceFromDirectoryToFile(batchFolderBrowserDialog.FileName, 
                 UILogic.ReadWhiteList(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "group1.txt")),
-                searchSubCheck.Checked, false, useGroupFolders.Checked, false, null);
+                searchSubCheck.Checked, compressCheckBox.Checked, useGroupFolders.Checked, false, null);
         }
 
         private void batchListIceContentsButton_Click(object sender, EventArgs e)
@@ -91,6 +93,29 @@ namespace zomFormNew
             string exportPath = basePath + "\\";
             Directory.GetFiles(batchFolderBrowserDialog.FileName);
             Form1.ListIceFromPath(batchFolderBrowserDialog.FileName, basePath, exportPath, useGroupFolders.Checked, searchSubCheck.Checked);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Title = "Select piece 1";
+            fileDialog.FileName = "";
+
+            if (fileDialog.ShowDialog() != DialogResult.OK)
+                return;
+            var file1 = File.ReadAllBytes(fileDialog.FileName);
+            fileDialog.Title = "Select piece 2";
+            fileDialog.FileName = "";
+
+            if (fileDialog.ShowDialog() != DialogResult.OK)
+                return;
+            var file2 = File.ReadAllBytes(fileDialog.FileName);
+
+            Debug.WriteLine(new Crc32Alt().GetCrc32(file1).ToString("X"));
+            Debug.WriteLine(new Crc32Alt().GetCrc32(file2).ToString("X"));
+            List<byte> crcCombo = new List<byte>(file1);
+            crcCombo.AddRange(file2);
+            Debug.WriteLine(new Crc32Alt().GetCrc32(crcCombo.ToArray()).ToString("X"));
         }
     }
 }
