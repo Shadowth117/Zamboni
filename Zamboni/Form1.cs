@@ -141,9 +141,9 @@ namespace zomForm
                 Directory.CreateDirectory(directory);
             for (int index = 0; index < groupToWrite.Length; ++index)
             {
-                string str = IceFile.getFileName(groupToWrite[index]);
+                string str = IceFile.getFileName(groupToWrite[index], index);
                 byte[] file;
-                if (str == "namelessFile.bin")
+                if (str == "namelessFile.bin" || str.Contains("namelessNIFLFile_"))
                 {
                     file = groupToWrite[index];
                 }
@@ -235,7 +235,7 @@ namespace zomForm
                     Directory.CreateDirectory(directoryName + "\\" + Path.GetFileNameWithoutExtension(this.extractOpenDialog.FileName) + "_group_1");
                 for (int index = 0; index < groupOneFiles.Length; ++index)
                 {
-                    string str = IceFile.getFileName(groupOneFiles[index]);
+                    string str = IceFile.getFileName(groupOneFiles[index], index);
                     if (str.EndsWith(".lua"))
                     {
                         int int32_2 = BitConverter.ToInt32(groupOneFiles[index], 12);
@@ -254,7 +254,7 @@ namespace zomForm
                     Directory.CreateDirectory(directoryName + "\\" + Path.GetFileNameWithoutExtension(this.extractOpenDialog.FileName) + "_group_2");
                 for (int index = 0; index < groupTwoFiles.Length; ++index)
                 {
-                    string str = IceFile.getFileName(groupTwoFiles[index]);
+                    string str = IceFile.getFileName(groupTwoFiles[index], index);
                     System.IO.File.WriteAllBytes(directoryName + "\\" + Path.GetFileNameWithoutExtension(this.extractOpenDialog.FileName) + "_group_2\\" + str, groupTwoFiles[index]);
                 }
             }
@@ -291,7 +291,7 @@ namespace zomForm
                                     byte[][] groupOneFiles = iceFile.groupOneFiles;
                                     for (int index = 0; index < groupOneFiles.Length; ++index)
                                     {
-                                        string str2 = IceFile.getFileName(groupOneFiles[index]);
+                                        string str2 = IceFile.getFileName(groupOneFiles[index], index);
                                         streamWriter.WriteLine("\t\t" + str2);
                                     }
                                 }
@@ -301,7 +301,7 @@ namespace zomForm
                                     byte[][] groupTwoFiles = iceFile.groupTwoFiles;
                                     for (int index = 0; index < groupTwoFiles.Length; ++index)
                                     {
-                                        string str2 = IceFile.getFileName(groupTwoFiles[index]);
+                                        string str2 = IceFile.getFileName(groupTwoFiles[index], index);
                                         streamWriter.WriteLine("\t\t" + str2);
                                     }
                                 }
@@ -587,18 +587,22 @@ namespace zomForm
                     if (iceFile.groupOneFiles.Length > 0)
                     {
                         sb.AppendLine("  Group 1 Contents:");
+                        int i = 0;
                         foreach (var file in iceFile.groupOneFiles)
                         {
-                            sb.AppendLine("    " + path + " " + IceFile.getFileName(file));
+                            sb.AppendLine("    " + path + " " + IceFile.getFileName(file, i));
+                            i++;
                         }
                     }
 
                     if (iceFile.groupTwoFiles.Length > 0)
                     {
                         sb.AppendLine("  Group 2 Contents:");
+                        int i = 0;
                         foreach (var file in iceFile.groupTwoFiles)
                         {
-                            sb.AppendLine("    " + path + " " + IceFile.getFileName(file));
+                            sb.AppendLine("    " + path + " " + IceFile.getFileName(file, i));
+                            i++;
                         }
                     }
                 }
