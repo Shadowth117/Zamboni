@@ -94,28 +94,5 @@ namespace zomFormNew
             Directory.GetFiles(batchFolderBrowserDialog.FileName);
             Form1.ListIceFromPath(batchFolderBrowserDialog.FileName, basePath, exportPath, useGroupFolders.Checked, searchSubCheck.Checked);
         }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Title = "Select piece 1";
-            fileDialog.FileName = "";
-
-            if (fileDialog.ShowDialog() != DialogResult.OK)
-                return;
-            var file1 = File.ReadAllBytes(fileDialog.FileName);
-            fileDialog.Title = "Select piece 2";
-            fileDialog.FileName = "";
-
-            if (fileDialog.ShowDialog() != DialogResult.OK)
-                return;
-            var file2 = File.ReadAllBytes(fileDialog.FileName);
-
-            Debug.WriteLine(new Crc32Alt().GetCrc32(file1).ToString("X"));
-            Debug.WriteLine(new Crc32Alt().GetCrc32(file2).ToString("X"));
-            List<byte> crcCombo = new List<byte>(file1);
-            crcCombo.AddRange(file2);
-            Debug.WriteLine(new Crc32Alt().GetCrc32(crcCombo.ToArray()).ToString("X"));
-        }
     }
 }

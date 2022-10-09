@@ -149,10 +149,10 @@ namespace zomForm
                 }
                 else
                 {
+                    int iceDataSize = BitConverter.ToInt32(groupToWrite[index], 0x8);
                     int iceHeaderSize = BitConverter.ToInt32(groupToWrite[index], 0xC);
-                    int newLength = groupToWrite[index].Length - iceHeaderSize;
-                    file = new byte[newLength];
-                    Array.ConstrainedCopy(groupToWrite[index], iceHeaderSize, file, 0, newLength);
+                    file = new byte[iceDataSize];
+                    Array.ConstrainedCopy(groupToWrite[index], iceHeaderSize, file, 0, iceDataSize);
                 }
                 Debug.WriteLine($"{str} - {file.Length}");
                 System.IO.File.WriteAllBytes(directory + "\\" + str, file);
