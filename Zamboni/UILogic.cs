@@ -102,13 +102,13 @@ namespace zomFormNew
             {
                 files = Directory.GetFiles(path);
             }
-            Array.Sort(files);
-            //Array.Sort(files, asciiSort);
+            Array.Sort(files, string.CompareOrdinal);
             var group1temp = new List<byte[]>();
             var group2temp = new List<byte[]>();
 
             foreach(var currfile in files)
             {
+                Debug.WriteLine(Path.GetFileName(currfile));
                 List<byte> file = new List<byte>(System.IO.File.ReadAllBytes(currfile));
                 var realName = Path.GetFileName(currfile);
 

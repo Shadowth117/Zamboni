@@ -143,6 +143,7 @@ namespace zomForm
             {
                 string str = IceFile.getFileName(groupToWrite[index], index);
                 byte[] file;
+                int iceHeaderSize = -1;
                 if (str == "namelessFile.bin" || str.Contains("namelessNIFLFile_"))
                 {
                     file = groupToWrite[index];
@@ -150,11 +151,11 @@ namespace zomForm
                 else
                 {
                     int iceDataSize = BitConverter.ToInt32(groupToWrite[index], 0x8);
-                    int iceHeaderSize = BitConverter.ToInt32(groupToWrite[index], 0xC);
+                    iceHeaderSize = BitConverter.ToInt32(groupToWrite[index], 0xC);
                     file = new byte[iceDataSize];
                     Array.ConstrainedCopy(groupToWrite[index], iceHeaderSize, file, 0, iceDataSize);
                 }
-                Debug.WriteLine($"{str} - {file.Length}");
+                Debug.WriteLine($"{str}");
                 System.IO.File.WriteAllBytes(directory + "\\" + str, file);
                 file = null;
                 groupToWrite[index] = null;
