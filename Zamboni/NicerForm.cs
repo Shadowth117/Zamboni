@@ -50,7 +50,7 @@ namespace zomFormNew
             string result = Form1.ExtractIce(Path.GetDirectoryName(fileDialog.FileName), Path.GetDirectoryName(fileDialog.FileName), fileDialog.FileName, useGroupFolders.Checked);
             if(result != null)
             {
-                File.WriteAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "log.txt", result);
+                File.WriteAllText(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "log.txt"), result);
             }
         }
 
