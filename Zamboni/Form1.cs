@@ -473,19 +473,29 @@ namespace zomForm
 
                     string group1Path;
                     string group2Path;
+                    string group3Path = "";
                     if (useGroups)
                     {
                         group1Path = Path.Combine(exportPath, Path.Combine(str2, "group1"));
                         group2Path = Path.Combine(exportPath, Path.Combine(str2, "group2"));
+                        group3Path = Path.Combine(exportPath, Path.Combine(str2, "group3"));
                     }
                     else
                     {
                         group1Path = str2;
                         group2Path = str2;
+                        group3Path = str2;
                     }
 
                     bool group1 = Form1.writeGroupToDirectory(iceFile.groupOneFiles, group1Path);
                     bool group2 = Form1.writeGroupToDirectory(iceFile.groupTwoFiles, group2Path);
+                    if(iceFile.groupThreeFiles?.Length > 0)
+                    {
+                        for(int i = 0; i < iceFile.groupThreeFiles.Length; i++)
+                        {
+                            Form1.writeGroupToDirectory(iceFile.groupThreeFiles[i], Path.Combine(group3Path, $"archive {i}"));
+                        }
+                    }
                     if (group1 == false && group2 == false)
                     {
                         Console.WriteLine($"Neither group1 nor group2 was dumped from {Path.GetFileName(currFile)}.");
@@ -616,6 +626,28 @@ namespace zomForm
                             }
                             sb.AppendLine("    " + path + " " + name);
                             i++;
+                        }
+                    }
+
+                    if(iceFile.groupThreeFiles?.Length > 0)
+                    {
+                        sb.AppendLine("  Group 3 Contents:");
+                        for(int j = 0; j < iceFile.groupThreeFiles.Length; j++)
+                        {
+                            var archive = iceFile.groupThreeFiles[j];
+                            sb.AppendLine($"    Group 3 Archive {j} Contents:");
+                            int i = 0;
+                            foreach (var file in archive)
+                            {
+                                var name = IceFile.getFileName(file, i);
+                                var ext = Path.GetExtension(name);
+                                if (!extensions.Contains(ext))
+                                {
+                                    extensions.Add(Path.GetExtension(name));
+                                }
+                                sb.AppendLine("      " + path + " " + name);
+                                i++;
+                            }
                         }
                     }
                 }
