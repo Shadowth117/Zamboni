@@ -108,7 +108,7 @@ namespace zomFormNew
 
             foreach(var currfile in files)
             {
-                Debug.WriteLine(Path.GetFileName(currfile));
+                //Debug.WriteLine(Path.GetFileName(currfile));
                 List<byte> file = new List<byte>(System.IO.File.ReadAllBytes(currfile));
                 var realName = Path.GetFileName(currfile);
 

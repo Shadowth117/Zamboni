@@ -148,18 +148,20 @@ namespace zamboni
                         ));
                         break;
                     case "list":
-                        StringBuilder sb = new StringBuilder();
+                        StringBuilder sb = new StringBuilder(); 
+                        List<string> extensions = new List<string>() { ".ice", ".hca", ".awb" };
                         Parallel.ForEach<string>(paths, (Action<string>)(path =>
                         {
                             if (str2 == "")
                             {
                                 str2 = Path.GetDirectoryName(path);
                             }
-                            sb.Append(Form1.ListIce(str2, path));
+                            sb.Append(Form1.ListIce(str2, path, extensions));
                         }
                         ));
-
+                        extensions.Sort();
                         File.WriteAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "IceFileList.txt", sb.ToString());
+                        File.WriteAllLines(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\UniqueExtensions.txt", extensions);
                         break;
                 }
             }

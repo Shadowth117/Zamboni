@@ -38,6 +38,7 @@ namespace zomFormNew
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.compressCheckBox = new System.Windows.Forms.CheckBox();
+            this.processInParallelCB = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // extractIceButton
@@ -65,7 +66,7 @@ namespace zomFormNew
             this.useGroupFolders.AutoSize = true;
             this.useGroupFolders.Checked = true;
             this.useGroupFolders.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.useGroupFolders.Location = new System.Drawing.Point(119, 18);
+            this.useGroupFolders.Location = new System.Drawing.Point(119, 33);
             this.useGroupFolders.Name = "useGroupFolders";
             this.useGroupFolders.Size = new System.Drawing.Size(109, 17);
             this.useGroupFolders.TabIndex = 2;
@@ -77,7 +78,7 @@ namespace zomFormNew
             this.searchSubCheck.AutoSize = true;
             this.searchSubCheck.Checked = true;
             this.searchSubCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.searchSubCheck.Location = new System.Drawing.Point(119, 47);
+            this.searchSubCheck.Location = new System.Drawing.Point(119, 56);
             this.searchSubCheck.Name = "searchSubCheck";
             this.searchSubCheck.Size = new System.Drawing.Size(130, 17);
             this.searchSubCheck.TabIndex = 3;
@@ -134,11 +135,24 @@ namespace zomFormNew
             this.compressCheckBox.Text = "Compress";
             this.compressCheckBox.UseVisualStyleBackColor = true;
             // 
+            // processInParallelCB
+            // 
+            this.processInParallelCB.AutoSize = true;
+            this.processInParallelCB.Checked = true;
+            this.processInParallelCB.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.processInParallelCB.Location = new System.Drawing.Point(119, 10);
+            this.processInParallelCB.Name = "processInParallelCB";
+            this.processInParallelCB.Size = new System.Drawing.Size(112, 17);
+            this.processInParallelCB.TabIndex = 9;
+            this.processInParallelCB.Text = "Process in Parallel";
+            this.processInParallelCB.UseVisualStyleBackColor = true;
+            // 
             // NicerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(255, 129);
+            this.Controls.Add(this.processInParallelCB);
             this.Controls.Add(this.compressCheckBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -166,5 +180,6 @@ namespace zomFormNew
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox compressCheckBox;
+        private System.Windows.Forms.CheckBox processInParallelCB;
     }
 }

@@ -155,7 +155,7 @@ namespace zomForm
                     file = new byte[iceDataSize];
                     Array.ConstrainedCopy(groupToWrite[index], iceHeaderSize, file, 0, iceDataSize);
                 }
-                Debug.WriteLine($"{str}");
+                //Debug.WriteLine($"{str}");
                 System.IO.File.WriteAllBytes(directory + "\\" + str, file);
                 file = null;
                 groupToWrite[index] = null;
@@ -449,9 +449,6 @@ namespace zomForm
         public static string ExtractIce(string basePath, string exportPath, string currFile, bool useGroups)
         {
             byte[] buffer = System.IO.File.ReadAllBytes(currFile);
-#if DEBUG
-            Console.WriteLine(currFile);
-#endif
             try
             {
                 if (buffer.Length <= 127 || buffer[0] != (byte)73 || (buffer[1] != (byte)67 || buffer[2] != (byte)69) || buffer[3] != (byte)0)
@@ -523,14 +520,17 @@ namespace zomForm
             List<string> files = filesE.ToList();
             files.Sort();
 
+            List<string> extensions = new List<string>() { ".ice", ".hca", ".awb" };
             foreach (string str in files)
             {
-                log.Append(ListIce(basePath, str));
+                log.Append(ListIce(basePath, str, extensions));
             }
+            extensions.Sort();
             File.WriteAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\IceFileList.txt", log.ToString());
+            File.WriteAllLines(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\UniqueExtensions.txt", extensions);
         }
 
-        public static StringBuilder ListIce(string basePath, string currFile)
+        public static StringBuilder ListIce(string basePath, string currFile, List<string> extensions)
         {
             StringBuilder sb = new StringBuilder();
             byte[] buffer = System.IO.File.ReadAllBytes(currFile);
@@ -591,7 +591,13 @@ namespace zomForm
                         int i = 0;
                         foreach (var file in iceFile.groupOneFiles)
                         {
-                            sb.AppendLine("    " + path + " " + IceFile.getFileName(file, i));
+                            var name = IceFile.getFileName(file, i);
+                            var ext = Path.GetExtension(name);
+                            if (!extensions.Contains(ext))
+                            {
+                                extensions.Add(Path.GetExtension(name));
+                            }
+                            sb.AppendLine("    " + path + " " + name);
                             i++;
                         }
                     }
@@ -602,7 +608,13 @@ namespace zomForm
                         int i = 0;
                         foreach (var file in iceFile.groupTwoFiles)
                         {
-                            sb.AppendLine("    " + path + " " + IceFile.getFileName(file, i));
+                            var name = IceFile.getFileName(file, i);
+                            var ext = Path.GetExtension(name);
+                            if (!extensions.Contains(ext))
+                            {
+                                extensions.Add(Path.GetExtension(name));
+                            }
+                            sb.AppendLine("    " + path + " " + name);
                             i++;
                         }
                     }
