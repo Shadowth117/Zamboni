@@ -580,9 +580,7 @@ namespace zomForm
             var stringOut = path + " " + extension;
             stringOut = stringOut.Substring(1);
             sb.AppendLine(stringOut);
-#if DEBUG
-            //      Console.WriteLine(currFile);
-#endif
+
             try
             {
                 if (buffer.Length <= 127 || buffer[0] != (byte)73 || (buffer[1] != (byte)67 || buffer[2] != (byte)69) || buffer[3] != (byte)0)
@@ -635,10 +633,11 @@ namespace zomForm
                         for(int j = 0; j < iceFile.groupThreeFiles.Length; j++)
                         {
                             var archive = iceFile.groupThreeFiles[j];
-                            sb.AppendLine($"    Group 3 Archive {j} Contents:");
                             int i = 0;
-                            foreach (var file in archive)
+                            sb.AppendLine($"    Group 3 Archive {j} Contents:");
+                            for (int k = 0; k < archive.Length; k++)
                             {
+                                var file = archive[k];
                                 var name = IceFile.getFileName(file, i);
                                 var ext = Path.GetExtension(name);
                                 if (!extensions.Contains(ext))
