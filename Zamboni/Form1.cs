@@ -139,12 +139,14 @@ namespace zomForm
         {
             if (!Directory.Exists(directory) && groupToWrite != null && (uint)groupToWrite.Length > 0U)
                 Directory.CreateDirectory(directory);
+
             for (int index = 0; index < groupToWrite.Length; ++index)
             {
-                string str = IceFile.getFileName(groupToWrite[index], index);
+                string iceContentName = IceFile.getFileName(groupToWrite[index], index);
+                var finalFilename = string.Join("_", iceContentName.Split(Path.GetInvalidFileNameChars()));
                 byte[] file;
                 int iceHeaderSize = -1;
-                if (str == "namelessFile.bin" || str.Contains("namelessNIFLFile_"))
+                if (finalFilename == "namelessFile.bin" || finalFilename.Contains("namelessNIFLFile_"))
                 {
                     file = groupToWrite[index];
                 }
@@ -156,7 +158,11 @@ namespace zomForm
                     Array.ConstrainedCopy(groupToWrite[index], iceHeaderSize, file, 0, iceDataSize);
                 }
                 //Debug.WriteLine($"{str}");
-                System.IO.File.WriteAllBytes(directory + "\\" + str, file);
+                if(iceContentName != finalFilename)
+                {
+                    System.IO.File.WriteAllText(directory + "\\" + finalFilename + "_originalName.txt", iceContentName);
+                }
+                System.IO.File.WriteAllBytes(directory + "\\" + finalFilename, file);
                 file = null;
                 groupToWrite[index] = null;
             }
